@@ -1,0 +1,19 @@
+{
+  "model_name": "Sugarcane Disease Classifier",
+  "input_shape": [
+    224,
+    224,
+    3
+  ],
+  "num_classes": 6,
+  "class_names": [
+    "Sugarcane_Bacterial_Blight",
+    "Sugarcane_Healthy",
+    "Sugarcane_Mosaic",
+    "Sugarcane_Red_Rot",
+    "Sugarcane_Rust",
+    "Sugarcane_Yellow"
+  ],
+  "total_params": 1971142,
+  "tensorflow_version": "2.10.0"
+}

@@ -1,0 +1,17 @@
+{
+  "model_name": "Cotton Disease Classifier",
+  "input_shape": [
+    224,
+    224,
+    3
+  ],
+  "num_classes": 4,
+  "class_names": [
+    "Cotton_Bacterial_Blight",
+    "Cotton_Curl_Virus",
+    "Cotton_Fusarium_Wilt",
+    "Cotton_Healthy"
+  ],
+  "total_params": 1970628,
+  "tensorflow_version": "2.10.0"
+}

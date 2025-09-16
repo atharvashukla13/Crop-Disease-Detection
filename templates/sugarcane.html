@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sugarcane Disease Classification - AgriMitra</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(45deg, #27ae60, #229954);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 1.1em;
+        opacity: 0.9;
+      }
+
+      .back-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .back-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .content {
+        padding: 40px;
+      }
+
+      .upload-section {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .upload-area {
+        border: 3px dashed #27ae60;
+        border-radius: 15px;
+        padding: 40px;
+        margin: 20px 0;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .upload-area:hover {
+        border-color: #229954;
+        background: #f2f9f5;
+      }
+
+      .upload-area.dragover {
+        border-color: #229954;
+        background: #f2f9f5;
+      }
+
+      .upload-icon {
+        font-size: 3em;
+        color: #27ae60;
+        margin-bottom: 20px;
+      }
+
+      .file-input {
+        display: none;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        background: linear-gradient(45deg, #27ae60, #229954);
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+        margin: 10px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+      }
+
+      .btn:disabled {
+        background: #bdc3c7;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .result-section {
+        margin-top: 40px;
+        padding: 30px;
+        background: #f8f9fa;
+        border-radius: 15px;
+        display: none;
+      }
+
+      .result-section.show {
+        display: block;
+      }
+
+      .result-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .result-header h3 {
+        color: #2c3e50;
+        font-size: 1.8em;
+        margin-bottom: 10px;
+      }
+
+      .confidence-bar {
+        background: #ecf0f1;
+        border-radius: 10px;
+        height: 20px;
+        margin: 10px 0;
+        overflow: hidden;
+      }
+
+      .confidence-fill {
+        height: 100%;
+        background: linear-gradient(45deg, #27ae60, #2ecc71);
+        border-radius: 10px;
+        transition: width 0.5s ease;
+      }
+
+      .prediction-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      .prediction-item {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        border-left: 4px solid #27ae60;
+      }
+
+      .prediction-item.top {
+        border-left-color: #e74c3c;
+        box-shadow: 0 5px 15px rgba(231, 76, 60, 0.2);
+      }
+
+      .prediction-class {
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 10px;
+      }
+
+      .prediction-confidence {
+        color: #7f8c8d;
+        font-size: 0.9em;
+      }
+
+      .image-preview {
+        max-width: 300px;
+        max-height: 300px;
+        border-radius: 10px;
+        margin: 20px auto;
+        display: block;
+      }
+
+      .loading {
+        display: none;
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .loading.show {
+        display: block;
+      }
+
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #27ae60;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .error {
+        background: #e74c3c;
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 20px 0;
+        display: none;
+      }
+
+      .error.show {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <a href="/" class="back-btn">← Back to Home</a>
+        <h1>🌾 Sugarcane Disease Classification</h1>
+        <p>Upload an image of sugarcane leaves to identify diseases</p>
+      </div>
+
+      <div class="content">
+        <div class="upload-section">
+          <div
+            class="upload-area"
+            onclick="document.getElementById('fileInput').click()"
+          >
+            <div class="upload-icon">📁</div>
+            <h3>Click to upload or drag and drop</h3>
+            <p>PNG, JPG, JPEG, GIF, or BMP (Max 16MB)</p>
+            <input
+              type="file"
+              id="fileInput"
+              class="file-input"
+              accept="image/*"
+            />
+          </div>
+
+          <button
+            id="predictBtn"
+            class="btn"
+            onclick="predictDisease()"
+            disabled
+          >
+            🔍 Predict Disease
+          </button>
+        </div>
+
+        <div class="loading" id="loading">
+          <div class="spinner"></div>
+          <p>Analyzing image...</p>
+        </div>
+
+        <div class="error" id="error"></div>
+
+        <div class="result-section" id="resultSection">
+          <div class="result-header">
+            <h3>Prediction Results</h3>
+            <div id="confidenceBar" class="confidence-bar">
+              <div id="confidenceFill" class="confidenceFill"></div>
+            </div>
+            <p id="confidenceText">Confidence: 0%</p>
+          </div>
+
+          <div id="imagePreview"></div>
+
+          <div class="prediction-grid" id="predictionGrid">
+            <!-- Predictions will be populated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let selectedFile = null;
+
+      // File input handling
+      document
+        .getElementById("fileInput")
+        .addEventListener("change", function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            selectedFile = file;
+            document.getElementById("predictBtn").disabled = false;
+            previewImage(file);
+          }
+        });
+
+      // Drag and drop handling
+      const uploadArea = document.querySelector(".upload-area");
+
+      uploadArea.addEventListener("dragover", function (e) {
+        e.preventDefault();
+        uploadArea.classList.add("dragover");
+      });
+
+      uploadArea.addEventListener("dragleave", function (e) {
+        e.preventDefault();
+        uploadArea.classList.remove("dragover");
+      });
+
+      uploadArea.addEventListener("drop", function (e) {
+        e.preventDefault();
+        uploadArea.classList.remove("dragover");
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          selectedFile = files[0];
+          document.getElementById("fileInput").files = files;
+          document.getElementById("predictBtn").disabled = false;
+          previewImage(files[0]);
+        }
+      });
+
+      function previewImage(file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.className = "image-preview";
+          document.getElementById("imagePreview").innerHTML = "";
+          document.getElementById("imagePreview").appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      }
+
+      async function predictDisease() {
+        if (!selectedFile) return;
+
+        const formData = new FormData();
+        formData.append("image", selectedFile);
+
+        // Show loading
+        document.getElementById("loading").classList.add("show");
+        document.getElementById("error").classList.remove("show");
+        document.getElementById("resultSection").classList.remove("show");
+        document.getElementById("predictBtn").disabled = true;
+
+        try {
+          const response = await fetch("/api/sugarcane/predict", {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await response.json();
+
+          if (result.error) {
+            throw new Error(result.error);
+          }
+
+          displayResults(result);
+        } catch (error) {
+          showError("Prediction failed: " + error.message);
+        } finally {
+          document.getElementById("loading").classList.remove("show");
+          document.getElementById("predictBtn").disabled = false;
+        }
+      }
+
+      function displayResults(result) {
+        // Update confidence bar
+        const confidence = Math.round(result.confidence * 100);
+        document.getElementById("confidenceFill").style.width =
+          confidence + "%";
+        document.getElementById(
+          "confidenceText"
+        ).textContent = `Confidence: ${confidence}%`;
+
+        // Create prediction grid
+        const predictionGrid = document.getElementById("predictionGrid");
+        predictionGrid.innerHTML = "";
+
+        const sortedPredictions = Object.entries(
+          result.class_probabilities
+        ).sort(([, a], [, b]) => b - a);
+
+        sortedPredictions.forEach(([className, confidence], index) => {
+          const item = document.createElement("div");
+          item.className = `prediction-item ${index === 0 ? "top" : ""}`;
+
+          const classDisplay = className
+            .replace("Sugarcane_", "")
+            .replace(/_/g, " ");
+          const confidencePercent = Math.round(confidence * 100);
+
+          item.innerHTML = `
+                    <div class="prediction-class">${classDisplay}</div>
+                    <div class="prediction-confidence">${confidencePercent}%</div>
+                `;
+
+          predictionGrid.appendChild(item);
+        });
+
+        document.getElementById("resultSection").classList.add("show");
+      }
+
+      function showError(message) {
+        const errorDiv = document.getElementById("error");
+        errorDiv.textContent = message;
+        errorDiv.classList.add("show");
+      }
+    </script>
+  </body>
+</html>

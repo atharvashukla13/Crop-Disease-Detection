@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgriMitra - Multi-Crop Disease Classification</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        max-width: 800px;
+        width: 90%;
+        text-align: center;
+      }
+
+      .header {
+        margin-bottom: 40px;
+      }
+
+      .header h1 {
+        color: #2c3e50;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        color: #7f8c8d;
+        font-size: 1.1em;
+      }
+
+      .models-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+      }
+
+      .model-card {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 2px solid transparent;
+      }
+
+      .model-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        border-color: #3498db;
+      }
+
+      .model-card h3 {
+        color: #2c3e50;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+      }
+
+      .model-card p {
+        color: #7f8c8d;
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        background: linear-gradient(45deg, #3498db, #2980b9);
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 1em;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+      }
+
+      .btn-cotton {
+        background: linear-gradient(45deg, #e74c3c, #c0392b);
+      }
+
+      .btn-cotton:hover {
+        box-shadow: 0 10px 20px rgba(231, 76, 60, 0.3);
+      }
+
+      .btn-sugarcane {
+        background: linear-gradient(45deg, #27ae60, #229954);
+      }
+
+      .btn-sugarcane:hover {
+        box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+      }
+
+      .api-info {
+        background: #ecf0f1;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 30px;
+      }
+
+      .api-info h4 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+      }
+
+      .api-endpoints {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .endpoint {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 4px solid #3498db;
+      }
+
+      .endpoint-method {
+        font-weight: bold;
+        color: #27ae60;
+        font-size: 0.9em;
+      }
+
+      .endpoint-url {
+        color: #2c3e50;
+        font-family: monospace;
+        font-size: 0.9em;
+        margin-top: 5px;
+      }
+
+      .status-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+
+      .status-online {
+        background: #27ae60;
+      }
+
+      .status-offline {
+        background: #e74c3c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🌾 AgriMitra</h1>
+        <p>Multi-Crop Disease Classification System</p>
+      </div>
+
+      <div class="models-grid">
+        <div class="model-card">
+          <h3>🌱 Cotton Disease Classification</h3>
+          <p>
+            Identify cotton diseases including Bacterial Blight, Curl Virus,
+            Fusarium Wilt, and Healthy plants with high accuracy.
+          </p>
+          <a href="/cotton" class="btn btn-cotton">Classify Cotton</a>
+        </div>
+
+        <div class="model-card">
+          <h3>🌾 Sugarcane Disease Classification</h3>
+          <p>
+            Detect sugarcane diseases including Bacterial Blight, Mosaic, Red
+            Rot, Rust, Yellow, and Healthy plants.
+          </p>
+          <a href="/sugarcane" class="btn btn-sugarcane">Classify Sugarcane</a>
+        </div>
+      </div>
+
+      <div class="api-info">
+        <h4>🔌 API Endpoints</h4>
+        <p>
+          Access our models programmatically using these REST API endpoints:
+        </p>
+
+        <div class="api-endpoints">
+          <div class="endpoint">
+            <div class="endpoint-method">GET</div>
+            <div class="endpoint-url">/api/models/status</div>
+          </div>
+
+          <div class="endpoint">
+            <div class="endpoint-method">POST</div>
+            <div class="endpoint-url">/api/cotton/predict</div>
+          </div>
+
+          <div class="endpoint">
+            <div class="endpoint-method">POST</div>
+            <div class="endpoint-url">/api/sugarcane/predict</div>
+          </div>
+
+          <div class="endpoint">
+            <div class="endpoint-method">GET</div>
+            <div class="endpoint-url">/api/cotton/classes</div>
+          </div>
+
+          <div class="endpoint">
+            <div class="endpoint-method">GET</div>
+            <div class="endpoint-url">/api/sugarcane/classes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Check API status on page load
+      fetch("/api/models/status")
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("API Status:", data);
+        })
+        .catch((error) => {
+          console.error("Error checking API status:", error);
+        });
+    </script>
+  </body>
+</html>
